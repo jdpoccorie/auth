@@ -1,0 +1,12 @@
+.edit {
+  background-color: rgb(19, 105, 7);
+  border: thin solid #000000;
+  color: white;
+  padding: .5rem;
+}
+.delete {
+  background-color: rgb(207, 13, 13);
+  border: thin solid #000000;
+  color: white;
+  padding: .5rem;
+}

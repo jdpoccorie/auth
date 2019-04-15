@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge, chrome=1">
+  <title>Autenticacion social</title>
+  <meta name="description" content="">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+</head>
+<body>
+  
+  <h1>Autenticacion con Firebase</h1>
+  <button id="login">
+    <i class="fas fa-sign-in-alt"></i>
+    entra con
+    <i class="fab fa-github"></i>
+  </button>
+  <div id="login-message"></div>
+  <p id="session-message"></p>
+  
+  <script src="https://www.gstatic.com/firebasejs/5.9.4/firebase.js"></script>
+  <script>
+    ;
+    ((d, c, f) => {
+      const config = {
+        apiKey: "AIzaSyC4oT_84d7ingJ1pR0RtjxpJBy6ssld0S0",
+        authDomain: "crud-94e61.firebaseapp.com",
+        databaseURL: "https://crud-94e61.firebaseio.com",
+        projectId: "crud-94e61",
+        storageBucket: "crud-94e61.appspot.com",
+        messagingSenderId: "922795181613"
+      };
+      f.initializeApp(config);
+
+      const provider = new f.auth.GithubAuthProvider(),
+        user = f.auth.currentUser,
+        loginMessage = d.getElementById('login-message'),
+        authMessage = d.getElementById('session-message')
+
+      f.auth().onAuthStateChanged(user => {
+        c(user)
+        if(user) {
+          c('Usuario Autenticado')
+          authMessage.innerHTML = `
+            <p>Si ves este contenido, es por que estas <b>Logueado</b></p>
+            <button id="logout">Salir</button>
+          `
+        } else {
+          c('Usuario NO Autenticado')
+          authMessage.innerHTML = `
+            <p>El contenido de esta sesión es para <b>Usuarios Logueados</b></p>
+          `
+        }
+      })
+
+      d.addEventListener('click', e => {
+        if (e.target.matches('#login')) {
+          f.auth().signInWithPopup(provider)
+            .then(result => {
+              loginMessage.innerHTML = `<p class="ok"><b>${result.user.email}</b> ha iniciado sesión con Github</p><img src="${result.user.photoURL}">`
+            })
+            .catch(err => {
+              loginMessage.innerHTML = `<p class="error">Error de Autenticacion</p> con Github ${err.code}: <b>${err.message}</b>`
+              c(err)
+            })
+        }
+
+        if (e.target.matches('#logout')) {
+          f.auth().signOut()
+            .then(() => loginMessage.innerHTML = '<p>Sesión terminada</p>')
+        }
+      })
+
+      
+    })(document, console.log, firebase);
+
+  </script>
+</body>
+</html>
